@@ -44,11 +44,20 @@ object TaxCalculator {
     TaxBracket(Double.MaxValue, 0.37)
   )
 
+  // Map for converting filing type to readable string
+  val filingTypeNames: Map[String, String] = Map(
+    "single" -> "Single",
+    "married_jointly" -> "Married jointly",
+    "married_separately" -> "Married separately",
+    "head_of_household" -> "Head of household"
+  )
+
   private given defaultTaxBrackets: List[TaxBracket] = singleFilers
 
-  private def calculateTax(income: Double)(using taxBrackets: List[TaxBracket]): Double = {
+  private def calculateTax(income: Double)(using taxBrackets: List[TaxBracket]): (Double, Double) = {
     var tax = 0.0
     var previousLimit = 0.0
+    var maxRate = 0.0
 
     breakable {
       for (bracket <- taxBrackets) {
@@ -57,11 +66,13 @@ object TaxCalculator {
           previousLimit = bracket.upperLimit
         } else {
           tax += (income - previousLimit) * bracket.rate
+          maxRate = bracket.rate
           break()
         }
+        maxRate = bracket.rate
       }
     }
-    tax
+    (tax, maxRate)
   }
 
   def main(args: Array[String]): Unit = {
@@ -84,8 +95,15 @@ object TaxCalculator {
         System.exit(1)
         List() // Just to satisfy the return type, this will never be reached
     }
-    
-    val tax = calculateTax(income)
-    println(s"Income: $$${income}, Tax: $$${tax}")
+
+    val (tax, maxRate) = calculateTax(income)
+    val netIncome = income - tax
+
+    println(s"Filing Type: ${filingTypeNames.getOrElse(filingType, "Unknown")}")
+    println(f"Income: $$${income}%.2f")
+    println(f"Total Tax: $$${tax}%.2f")
+    println(f"Net Income: $$${netIncome}%.2f")
+    println(f"Gross Income: $$${income}%.2f")
+    println(f"Maximum Tax Rate Applied: ${maxRate * 100}%.2f%%")
   }
 }
