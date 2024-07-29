@@ -13,7 +13,12 @@ object TaxCalculator {
   }
 
   def main(args: Array[String]): Unit = {
-    val income = 150000.0 // Input income here
+    if (args.length != 1) {
+      println("Usage: scala TaxCalculator <income>")
+      System.exit(1)
+    }
+
+    val income = args(0).toDouble
     val tax = calculateTax(income)
     println(s"Income: $$${income}, Tax: $$${tax}")
   }
