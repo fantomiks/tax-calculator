@@ -4,5 +4,9 @@ ThisBuild / scalaVersion := "3.4.2"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "TaxCalculator"
+    name := "TaxCalculator",
+    libraryDependencies ++= Seq(
+      "org.scalatest" %% "scalatest" % "3.2.18" % Test
+    ),
+    testFrameworks += new TestFramework("org.scalatest.tools.Framework")
   )
