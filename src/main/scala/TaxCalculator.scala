@@ -2,9 +2,9 @@ import scala.util.control.Breaks._
 
 object TaxCalculator {
 
-  private case class TaxBracket(upperLimit: Double, rate: Double)
+  case class TaxBracket(upperLimit: Double, rate: Double)
 
-  private val singleFilers: List[TaxBracket] = List(
+  val singleFilers: List[TaxBracket] = List(
     TaxBracket(11600, 0.10),
     TaxBracket(47150, 0.12),
     TaxBracket(100525, 0.22),
@@ -14,7 +14,7 @@ object TaxCalculator {
     TaxBracket(Double.MaxValue, 0.37)
   )
 
-  private val marriedFilingJointly: List[TaxBracket] = List(
+  val marriedFilingJointly: List[TaxBracket] = List(
     TaxBracket(23200, 0.10),
     TaxBracket(94300, 0.12),
     TaxBracket(201050, 0.22),
@@ -24,7 +24,7 @@ object TaxCalculator {
     TaxBracket(Double.MaxValue, 0.37)
   )
 
-  private val marriedFilingSeparately: List[TaxBracket] = List(
+  val marriedFilingSeparately: List[TaxBracket] = List(
     TaxBracket(11600, 0.10),
     TaxBracket(47150, 0.12),
     TaxBracket(100525, 0.22),
@@ -34,7 +34,7 @@ object TaxCalculator {
     TaxBracket(Double.MaxValue, 0.37)
   )
 
-  private val headOfHousehold: List[TaxBracket] = List(
+  val headOfHousehold: List[TaxBracket] = List(
     TaxBracket(16550, 0.10),
     TaxBracket(63100, 0.12),
     TaxBracket(100500, 0.22),
@@ -52,9 +52,9 @@ object TaxCalculator {
     "head_of_household" -> "Head of household"
   )
 
-  private given defaultTaxBrackets: List[TaxBracket] = singleFilers
+  given defaultTaxBrackets: List[TaxBracket] = singleFilers
 
-  private def calculateTax(income: Double)(using taxBrackets: List[TaxBracket]): (Double, Double) = {
+  def calculateTax(income: Double)(using taxBrackets: List[TaxBracket]): (Double, Double) = {
     var tax = 0.0
     var previousLimit = 0.0
     var maxRate = 0.0
